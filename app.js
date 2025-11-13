@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import indexRoutes from "./routes/index.js";
-import productsRoutes from "./routes/products.js";
+import animalesRoutes from "./routes/animales.js";
 import categoriesRoutes from "./routes/categories.js";
 import ordersRoutes from "./routes/orders.js";
 
@@ -38,7 +38,7 @@ app.use(
 
 /* Routes */
 app.use("/", indexRoutes);
-app.use("/products", productsRoutes);
+app.use("/animales", animalesRoutes);
 app.use("/categories", categoriesRoutes);
 app.use("/orders", ordersRoutes);
 
