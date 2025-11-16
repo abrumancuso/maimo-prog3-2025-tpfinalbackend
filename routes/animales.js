@@ -3,38 +3,40 @@ import Animal from "../models/animal.js";
 
 const router = express.Router();
 
-const findAllAnimals = async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const animals = await Animal.find().select(
-      "_id name species age size location description"
+      "_id name species age size location description imageUrl"
     );
-    return res
-      .status(200)
-      .send({ message: "Todos los animales", animals });
+    res.status(200).send({ message: "Todos los animales", animals });
   } catch (error) {
-    return res.status(501).send({ message: "Hubo un error", error });
+    res.status(500).send({ message: "Error al obtener animales", error });
   }
-};
+});
 
-const findOneAnimal = async (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
+
   try {
-    const animal = await Animal.findOne({ _id: id }).select(
-      "_id name species age size location description"
+    const animal = await Animal.findById(id).select(
+      "_id name species age size location description imageUrl"
     );
 
     if (!animal) {
-      return res.status(404).send({ message: "No se encontró el animal", id });
+      return res
+        .status(404)
+        .send({ message: "No se encontró el animal", id });
     }
 
-    return res.status(200).send({ message: "Animal encontrado", animal });
+    res.status(200).send({ message: "Animal encontrado", animal });
   } catch (error) {
-    return res.status(501).send({ message: "Hubo un error", error });
+    res.status(500).send({ message: "Error al obtener animal", error });
   }
-};
+});
 
-const addAnimal = async (req, res) => {
-  const { name, species, age, size, location, description } = req.body;
+router.post("/", async (req, res) => {
+  const { name, species, age, size, location, description, imageUrl } = req.body;
+
   try {
     const animal = new Animal({
       name,
@@ -43,22 +45,52 @@ const addAnimal = async (req, res) => {
       size,
       location,
       description,
+      imageUrl
     });
 
     await animal.save();
-
-    return res.status(200).send({ message: "Animal creado", animal });
+    res.status(200).send({ message: "Animal creado", animal });
   } catch (error) {
-    return res.status(501).send({ message: "Hubo un error", error });
+    res.status(500).send({ message: "Error al crear animal", error });
   }
-};
+});
 
-const deleteAnimal = async (req, res) => {
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  try {
-    const animalToDelete = await Animal.findOne({ _id: id });
+  const { name, species, age, size, location, description, imageUrl } = req.body;
 
-    if (!animalToDelete) {
+  try {
+    const animal = await Animal.findById(id);
+
+    if (!animal) {
+      return res
+        .status(404)
+        .send({ message: "No existe el animal", id });
+    }
+
+    animal.name = name ?? animal.name;
+    animal.species = species ?? animal.species;
+    animal.age = age ?? animal.age;
+    animal.size = size ?? animal.size;
+    animal.location = location ?? animal.location;
+    animal.description = description ?? animal.description;
+    animal.imageUrl = imageUrl ?? animal.imageUrl;
+
+    await animal.save();
+
+    res.status(200).send({ message: "Animal actualizado", animal });
+  } catch (error) {
+    res.status(500).send({ message: "Error al actualizar animal", error });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const animal = await Animal.findById(id);
+
+    if (!animal) {
       return res
         .status(404)
         .send({ message: "No existe el animal", id });
@@ -66,51 +98,11 @@ const deleteAnimal = async (req, res) => {
 
     await Animal.deleteOne({ _id: id });
 
-    return res
-      .status(200)
-      .send({ message: "Animal borrado", animal: animalToDelete });
+    res.status(200).send({ message: "Animal borrado", animal });
   } catch (error) {
-    return res.status(501).send({ message: "Hubo un error", error });
+    res.status(500).send({ message: "Error al borrar animal", error });
   }
-};
-
-const updateAnimal = async (req, res) => {
-  const { id } = req.params;
-  const { name, species, age, size, location, description } = req.body;
-
-  try {
-    const animalToUpdate = await Animal.findOne({ _id: id });
-
-    if (!animalToUpdate) {
-      return res
-        .status(404)
-        .send({ message: "No existe el animal", id });
-    }
-
-    animalToUpdate.name = name ?? animalToUpdate.name;
-    animalToUpdate.species = species ?? animalToUpdate.species;
-    animalToUpdate.age = age ?? animalToUpdate.age;
-    animalToUpdate.size = size ?? animalToUpdate.size;
-    animalToUpdate.location = location ?? animalToUpdate.location;
-    animalToUpdate.description =
-      description ?? animalToUpdate.description;
-
-    await animalToUpdate.save();
-
-    return res
-      .status(200)
-      .send({ message: "Animal actualizado", animal: animalToUpdate });
-  } catch (error) {
-    return res.status(501).send({ message: "Hubo un error", error });
-  }
-};
-
-// CRUD endpoints
-router.get("/", findAllAnimals);
-router.get("/:id", findOneAnimal);
-router.post("/", addAnimal);
-router.put("/:id", updateAnimal);
-router.delete("/:id", deleteAnimal);
+});
 
 export default router;
 

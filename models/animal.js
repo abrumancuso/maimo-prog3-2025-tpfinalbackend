@@ -7,7 +7,8 @@ const animalSchema = new mongoose.Schema(
     age: { type: String, required: true },
     size: { type: String, required: true },
     location: { type: String, required: true },
-    description: { type: String, required: true }
+    description: { type: String, required: true },
+    imageUrl: { type: String, default: "" } 
   },
   {
     timestamps: true
