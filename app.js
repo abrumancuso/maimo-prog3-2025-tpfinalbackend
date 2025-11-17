@@ -5,6 +5,8 @@ import createError from "http-errors";
 
 import indexRoutes from "./routes/index.js";
 import animalesRoutes from "./routes/animales.js";
+import adoptionsRoutes from "./routes/adoptions.js";
+
 
 
 console.log("\x1Bc");
@@ -39,6 +41,7 @@ app.use(
 
 app.use("/", indexRoutes);
 app.use("/animales", animalesRoutes);
+app.use("/adoptions", adoptionsRoutes);
 
 
 app.use(function (req, res, next) {

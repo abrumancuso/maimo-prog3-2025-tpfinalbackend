@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const animals = await Animal.find().select(
-      "_id name species age size location description imageUrl"
+      "_id name species age size location description image"
     );
     res.status(200).send({ message: "Todos los animales", animals });
   } catch (error) {
@@ -15,19 +15,15 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const animal = await Animal.findById(id).select(
-      "_id name species age size location description imageUrl"
+    const animal = await Animal.findById(req.params.id).select(
+      "_id name species age size location description image"
     );
-
     if (!animal) {
       return res
         .status(404)
-        .send({ message: "No se encontró el animal", id });
+        .send({ message: "No se encontró el animal", id: req.params.id });
     }
-
     res.status(200).send({ message: "Animal encontrado", animal });
   } catch (error) {
     res.status(500).send({ message: "Error al obtener animal", error });
@@ -35,7 +31,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, species, age, size, location, description, imageUrl } = req.body;
+  const { name, species, age, size, location, description, image } = req.body;
 
   try {
     const animal = new Animal({
@@ -45,7 +41,7 @@ router.post("/", async (req, res) => {
       size,
       location,
       description,
-      imageUrl
+      image
     });
 
     await animal.save();
@@ -57,15 +53,14 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, species, age, size, location, description, imageUrl } = req.body;
+  const { name, species, age, size, location, description, image } = req.body;
 
   try {
     const animal = await Animal.findById(id);
-
     if (!animal) {
       return res
         .status(404)
-        .send({ message: "No existe el animal", id });
+        .send({ message: "No se encontró el animal", id });
     }
 
     animal.name = name ?? animal.name;
@@ -74,7 +69,7 @@ router.put("/:id", async (req, res) => {
     animal.size = size ?? animal.size;
     animal.location = location ?? animal.location;
     animal.description = description ?? animal.description;
-    animal.imageUrl = imageUrl ?? animal.imageUrl;
+    animal.image = image ?? animal.image;
 
     await animal.save();
 
@@ -89,15 +84,13 @@ router.delete("/:id", async (req, res) => {
 
   try {
     const animal = await Animal.findById(id);
-
     if (!animal) {
       return res
         .status(404)
-        .send({ message: "No existe el animal", id });
+        .send({ message: "No se encontró el animal", id });
     }
 
     await Animal.deleteOne({ _id: id });
-
     res.status(200).send({ message: "Animal borrado", animal });
   } catch (error) {
     res.status(500).send({ message: "Error al borrar animal", error });
@@ -105,4 +98,3 @@ router.delete("/:id", async (req, res) => {
 });
 
 export default router;
-
