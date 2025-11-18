@@ -7,7 +7,7 @@ import indexRoutes from "./routes/index.js";
 import animalesRoutes from "./routes/animales.js";
 import adoptionsRoutes from "./routes/adoptions.js";
 import adoptantesRoutes from "./routes/adoptantes.js";
-
+import propuestasRoutes from "./routes/propuestas.js";
 
 
 
@@ -45,6 +45,7 @@ app.use("/", indexRoutes);
 app.use("/animales", animalesRoutes);
 app.use("/adoptions", adoptionsRoutes);
 app.use("/adoptantes", adoptantesRoutes);
+app.use("/propuestas", propuestasRoutes);
 
 
 
