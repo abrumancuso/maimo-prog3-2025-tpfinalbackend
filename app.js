@@ -6,6 +6,8 @@ import createError from "http-errors";
 import indexRoutes from "./routes/index.js";
 import animalesRoutes from "./routes/animales.js";
 import adoptionsRoutes from "./routes/adoptions.js";
+import adoptantesRoutes from "./routes/adoptantes.js";
+
 
 
 
@@ -42,6 +44,8 @@ app.use(
 app.use("/", indexRoutes);
 app.use("/animales", animalesRoutes);
 app.use("/adoptions", adoptionsRoutes);
+app.use("/adoptantes", adoptantesRoutes);
+
 
 
 app.use(function (req, res, next) {
