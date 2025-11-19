@@ -8,7 +8,7 @@ const adoptanteSchema = new mongoose.Schema(
     household: { type: String, required: true },
     housingType: { type: String, required: true },
     bio: { type: String, required: true },
-    image: { type: String, required: true }
+    image: { type: String, default: "" }
   },
   { timestamps: true }
 );

@@ -10,9 +10,7 @@ const animalSchema = new mongoose.Schema(
     description: { type: String, required: true },
     image: { type: String, default: "" }
   },
-  {
-    timestamps: true
-  }
+  { timestamps: true }
 );
 
 const Animal = mongoose.model("Animal", animalSchema);

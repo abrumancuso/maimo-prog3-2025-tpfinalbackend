@@ -1,99 +1,44 @@
-import express from "express";
-import Animal from "../models/animal.js";
+import { Router } from "express";
+import Animal from "../models/Animal.js";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const animals = await Animal.find().select(
-      "_id name species age size location description image"
-    );
-    res.status(200).send({ message: "Todos los animales", animals });
-  } catch (error) {
-    res.status(500).send({ message: "Error al obtener animales", error });
+    const animals = await Animal.find().sort({ createdAt: -1 });
+    res.json({ animals });
+  } catch (e) {
+    res.status(500).json({ message: "Error al obtener animales" });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const animal = await Animal.findById(req.params.id).select(
-      "_id name species age size location description image"
-    );
-    if (!animal) {
-      return res
-        .status(404)
-        .send({ message: "No se encontró el animal", id: req.params.id });
-    }
-    res.status(200).send({ message: "Animal encontrado", animal });
-  } catch (error) {
-    res.status(500).send({ message: "Error al obtener animal", error });
+    const animal = await Animal.findById(req.params.id);
+    if (!animal) return res.status(404).json({ message: "Animal no encontrado" });
+    res.json({ animal });
+  } catch (e) {
+    res.status(500).json({ message: "Error al obtener el animal" });
   }
 });
 
 router.post("/", async (req, res) => {
-  const { name, species, age, size, location, description, image } = req.body;
-
   try {
-    const animal = new Animal({
+    const { name, species, age, size, location, description } = req.body;
+
+    const newAnimal = await Animal.create({
       name,
       species,
       age,
       size,
       location,
       description,
-      image
+      image: ""
     });
 
-    await animal.save();
-    res.status(200).send({ message: "Animal creado", animal });
-  } catch (error) {
-    res.status(500).send({ message: "Error al crear animal", error });
-  }
-});
-
-router.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const { name, species, age, size, location, description, image } = req.body;
-
-  try {
-    const animal = await Animal.findById(id);
-    if (!animal) {
-      return res
-        .status(404)
-        .send({ message: "No se encontró el animal", id });
-    }
-
-    animal.name = name ?? animal.name;
-    animal.species = species ?? animal.species;
-    animal.age = age ?? animal.age;
-    animal.size = size ?? animal.size;
-    animal.location = location ?? animal.location;
-    animal.description = description ?? animal.description;
-    animal.image = image ?? animal.image;
-
-    await animal.save();
-
-    res.status(200).send({ message: "Animal actualizado", animal });
-  } catch (error) {
-    res.status(500).send({ message: "Error al actualizar animal", error });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const animal = await Animal.findById(id);
-    if (!animal) {
-      return res
-        .status(404)
-        .send({ message: "No se encontró el animal", id });
-    }
-
-    await Animal.deleteOne({ _id: id });
-    res.status(200).send({ message: "Animal borrado", animal });
-  } catch (error) {
-    res.status(500).send({ message: "Error al borrar animal", error });
+    res.status(201).json({ animal: newAnimal });
+  } catch (e) {
+    res.status(500).json({ message: "Error al crear animal" });
   }
 });
 
