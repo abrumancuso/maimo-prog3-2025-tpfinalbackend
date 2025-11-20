@@ -26,15 +26,7 @@ app.set("port", process.env.PORT || 4000);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://maimo-prog3-2025-tpfinal.vercel.app",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors()); 
 
 
 
