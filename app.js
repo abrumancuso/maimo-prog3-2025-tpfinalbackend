@@ -5,9 +5,9 @@ import createError from "http-errors";
 
 import indexRoutes from "./routes/index.js";
 import animalesRoutes from "./routes/animales.js";
-import adoptionsRoutes from "./routes/adoptions.js";
 import adoptantesRoutes from "./routes/adoptantes.js";
-import propuestasRoutes from "./routes/propuestas.js";
+import solicitudesAdopcionRoutes from "./routes/solicitudesAdopcion.js";
+import propuestasAdopcionRoutes from "./routes/propuestasAdopcion.js";
 
 
 
@@ -43,9 +43,10 @@ app.use(
 
 app.use("/", indexRoutes);
 app.use("/animales", animalesRoutes);
-app.use("/adoptions", adoptionsRoutes);
 app.use("/adoptantes", adoptantesRoutes);
-app.use("/propuestas", propuestasRoutes);
+app.use("/solicitudes-adopcion", solicitudesAdopcionRoutes);
+app.use("/propuestas-adopcion", propuestasAdopcionRoutes);
+
 
 
 
