@@ -28,17 +28,14 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "local"
-        ? [`http://${process.env.FRONT_URL}`]
-        : [
-            `https://${process.env.FRONT_URL}`,
-            `https://www.${process.env.FRONT_URL}`,
-          ],
+    origin: [
+      "http://localhost:3000",
+      "https://maimo-prog3-2025-tpfinal.vercel.app",
+    ],
     credentials: true,
-    exposedHeaders: "Authorization",
   })
 );
+
 
 
 app.use("/", indexRoutes);
